@@ -9,587 +9,146 @@
 
   :root{
     --paper: #F7F1E2;
-    --paper-deep: #EFE6CF;
     --ink: #1C1A17;
     --coral: #F2574E;
     --coral-deep: #D8392F;
     --coral-soft: #FFD9D2;
-    --cheek: #FFB3AB;
     --bamboo: #C9985F;
     --bamboo-deep: #8C6A3F;
-    --gold: #D9A441;
-    --line: rgba(28,26,23,0.14);
     --shadow: rgba(50, 30, 10, 0.18);
+    --line: rgba(28,26,23,0.14);
   }
 
   *{ box-sizing: border-box; }
-
-  html,body{
-    margin:0; padding:0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Zen Maru Gothic', sans-serif;
-    overflow-x:hidden;
-  }
-
   body{
-    min-height:100vh;
-    background-image:
-      radial-gradient(circle at 18% 12%, rgba(242,87,78,0.06), transparent 40%),
-      radial-gradient(circle at 85% 8%, rgba(201,152,95,0.10), transparent 35%),
-      repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(28,26,23,0.025) 39px),
-      repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(28,26,23,0.025) 39px);
-  }
-
-  .stage{
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 28px 20px 80px;
-    position: relative;
-  }
-
-  /* ===== ヘッダー ===== */
-  header{
-    text-align:center;
-    margin-bottom: 6px;
-    position:relative;
-  }
-
-  .kicker{
-    font-family:'Yomogi', cursive;
-    font-size: 15px;
-    letter-spacing: 0.18em;
-    color: var(--bamboo-deep);
-    display:inline-block;
-    padding: 4px 16px;
-    border: 1.5px solid var(--bamboo);
-    border-radius: 999px;
-    background: rgba(255,255,255,0.5);
-  }
-
-  h1{
-    font-size: clamp(28px, 6vw, 44px);
-    font-weight: 900;
-    margin: 14px 0 4px;
-    letter-spacing: 0.03em;
-    line-height:1.25;
-  }
-  h1 .accent{
-    color: var(--coral-deep);
-    position:relative;
-    display:inline-block;
-  }
-
-  .sub{
-    font-size: 15px;
-    color: #5b5447;
-    margin: 0 auto;
-    max-width: 480px;
-    line-height:1.7;
-  }
-
-  /* ===== タコ本体 & 吹き出し ===== */
-  .octo-wrap{
-    display:flex;
-    justify-content:center;
-    margin: 18px 0 4px;
-    position: relative;
-  }
-
-  .octo-img{
-    width: 190px;
-    height: 190px;
-    filter: drop-shadow(0 10px 18px var(--shadow));
-    animation: bob 4.2s ease-in-out infinite;
-    transform-origin: 50% 80%;
-  }
-
-  @keyframes bob{
-    0%, 100% { transform: translateY(0) rotate(-1.2deg); }
-    50% { transform: translateY(-9px) rotate(1.2deg); }
-  }
-
-  .octo-img.thinking{
-    animation: thinking-wiggle 0.6s ease-in-out infinite;
-  }
-  @keyframes thinking-wiggle{
-    0%,100%{ transform: translateY(-4px) rotate(-3deg); }
-    50%{ transform: translateY(-10px) rotate(3deg); }
-  }
-
-  .bubble{
-    position:absolute;
-    top: -8px;
-    right: calc(50% - 195px);
-    background: #fff;
-    border: 2.5px solid var(--ink);
-    border-radius: 18px;
-    padding: 9px 14px;
-    font-family:'Yomogi', cursive;
-    font-size: 14px;
-    max-width: 200px;
-    box-shadow: 3px 3px 0 var(--ink);
-    opacity:0;
-    transform: translateY(6px) scale(0.9);
-    transition: all 0.35s cubic-bezier(.2,1.5,.4,1);
-  }
-  .bubble.show{ opacity:1; transform: translateY(0) scale(1); }
-  .bubble::after{
-    content:"";
-    position:absolute;
-    left: -12px;
-    bottom: 14px;
-    width: 0; height:0;
-    border: 8px solid transparent;
-    border-right-color: var(--ink);
-  }
-  .bubble::before{
-    content:"";
-    position:absolute;
-    left: -8.5px;
-    bottom: 15px;
-    width: 0; height:0;
-    border: 6.5px solid transparent;
-    border-right-color: #fff;
-    z-index:1;
-  }
-
-  @media (max-width: 560px){
-    .bubble{ right: 10px; top: -34px; }
-  }
-
-  /* ===== 入力エリア ===== */
-  .console{
-    background: #fff;
-    border: 2.5px solid var(--ink);
-    border-radius: 22px;
-    box-shadow: 6px 6px 0 var(--shadow);
-    padding: 22px;
-    margin-top: 18px;
-    position: relative;
-  }
-
-  .console-label{
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--bamboo-deep);
-    margin-bottom: 8px;
-    display:flex;
-    align-items:center;
-    gap:6px;
-  }
-  .console-label .dot{
-    width:7px; height:7px; border-radius:50%;
-    background: var(--coral);
-    display:inline-block;
-  }
-
-  textarea{
-    width:100%;
-    min-height: 92px;
-    resize: vertical;
-    border: 1.5px solid var(--line);
-    border-radius: 14px;
+    margin:0; padding:20px;
     background: var(--paper);
-    padding: 14px 16px;
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-size: 15.5px;
-    line-height:1.7;
     color: var(--ink);
-    outline:none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: 'Zen Maru Gothic', sans-serif;
   }
-  textarea::placeholder{ color: #a59d8b; }
-  textarea:focus{
-    border-color: var(--coral);
-    box-shadow: 0 0 0 3px rgba(242,87,78,0.12);
-  }
-
-  .console-foot{
-    display:flex;
-    align-items:center;
-    justify-content: space-between;
-    margin-top: 14px;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .hint-chips{
-    display:flex;
-    gap: 7px;
-    flex-wrap: wrap;
-  }
-  .chip{
-    font-size: 12px;
-    padding: 6px 11px;
-    border-radius: 999px;
-    border: 1.3px solid var(--line);
-    background: #fff;
-    color: #6b6354;
-    cursor:pointer;
-    transition: all 0.15s;
-    white-space:nowrap;
-  }
-  .chip:hover{
-    border-color: var(--coral);
-    color: var(--coral-deep);
-    background: var(--coral-soft);
-  }
-
-  .go-btn{
-    flex-shrink:0;
-    background: var(--coral);
-    color:#fff;
-    border: 2.5px solid var(--ink);
-    border-radius: 999px;
-    padding: 13px 26px;
-    font-family:'Zen Maru Gothic', sans-serif;
-    font-weight: 700;
-    font-size: 15.5px;
-    cursor:pointer;
-    box-shadow: 3px 3px 0 var(--ink);
-    transition: transform 0.12s, box-shadow 0.12s, background 0.2s;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  .go-btn:hover{ background: var(--coral-deep); }
-  .go-btn:active{
-    transform: translate(3px,3px);
-    box-shadow: 0 0 0 var(--ink);
-  }
-  .go-btn:disabled{
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform:none;
-  }
-  .go-btn .stick{
-    width: 3px; height: 18px;
-    background: linear-gradient(var(--bamboo), var(--bamboo-deep));
-    border-radius: 2px;
-    display:inline-block;
-    transform: rotate(20deg);
-  }
-
-  .error-msg{
-    color: var(--coral-deep);
-    font-size: 13px;
-    margin-top: 10px;
-    display:none;
-  }
-  .error-msg.show{ display:block; }
-
-  /* ===== 結果エリア（チャット風） ===== */
-  .results{
-    margin-top: 36px;
-  }
-
-  .results-head{
-    text-align:center;
-    margin-bottom: 22px;
-    display:none;
-  }
-  .results-head.show{ display:block; }
-  .results-head .label{
-    font-family:'Yomogi', cursive;
-    font-size: 14px;
-    color: var(--bamboo-deep);
-  }
-  .results-head h2{
-    font-size: 22px;
-    margin: 4px 0 0;
-    font-weight: 900;
-  }
-
-  #results-zone {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 0;
-  }
-
+  .stage{ max-width: 600px; margin: 0 auto; }
+  
+  /* 吹き出しのスタイル */
   .octopus-bubble {
     background: #fff;
-    color: var(--ink);
     padding: 16px 20px;
     border: 2px solid var(--ink);
     border-radius: 20px;
-    border-top-left-radius: 0; 
-    position: relative;
-    max-width: 85%;
-    align-self: flex-start;
+    border-top-left-radius: 0;
+    margin-bottom: 16px;
     box-shadow: 4px 4px 0 var(--shadow);
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.4s cubic-bezier(.2,1,.3,1), transform 0.4s cubic-bezier(.2,1,.3,1);
-    line-height: 1.7;
+    transition: opacity 0.4s, transform 0.4s;
   }
-
-  .octopus-bubble.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
+  .octopus-bubble.show { opacity: 1; transform: translateY(0); }
+  
   .octopus-bubble-title {
     font-weight: 700;
     color: var(--coral-deep);
     margin-bottom: 6px;
     font-size: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
-
-  .octopus-bubble-body {
-    font-size: 14.5px;
-    white-space: pre-wrap;
-    color: #3c382f;
-  }
+  .octopus-bubble-body { font-size: 14.5px; line-height: 1.6; }
 
   #next-ideas-btn {
     display: block;
-    margin: 24px auto 0;
-    background: #fff;
-    border: 2px solid var(--ink);
-    border-radius: 999px;
-    padding: 12px 28px;
-    font-family: inherit;
-    font-size: 14.5px;
-    font-weight: 700;
-    color: var(--bamboo-deep);
-    cursor: pointer;
-    box-shadow: 3px 3px 0 var(--ink);
-    transition: transform 0.12s;
-  }
-  #next-ideas-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--ink);
-  }
-
-  .summary-card{
-    margin-top: 24px;
-    background: linear-gradient(135deg, var(--coral-soft), #fff 60%);
-    border: 2.5px solid var(--ink);
-    border-radius: 18px;
-    padding: 18px 20px;
-    box-shadow: 5px 5px 0 var(--shadow);
-    opacity:0;
-    max-width: 680px;
-    margin-left: auto;
-    margin-right: auto;
-    transform: translateY(16px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    display: none;
-  }
-  .summary-card.show{ display: block; opacity:1; transform: translateY(0); }
-  .summary-card .leg-tag{ 
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--bamboo-deep);
-    margin-bottom: 8px;
-  }
-  .summary-card .leg-body{ font-weight: 500; font-size: 14.5px; line-height: 1.75; }
-
-  /* ===== ローディング ===== */
-  .loading-zone{
-    display:none;
-    text-align:center;
-    padding: 30px 0 6px;
-  }
-  .loading-zone.show{ display:block; }
-  .loading-text{
-    font-family:'Yomogi', cursive;
-    font-size: 15px;
-    color: var(--bamboo-deep);
-    min-height: 20px;
-  }
-  .ink-dots{
-    display:flex;
-    gap:6px;
-    justify-content:center;
-    margin-top: 10px;
-  }
-  .ink-dots span{
-    width:8px; height:8px;
-    border-radius:50%;
+    margin: 20px auto;
+    padding: 12px 24px;
     background: var(--coral);
-    animation: dotpulse 1.1s ease-in-out infinite;
-  }
-  .ink-dots span:nth-child(2){ animation-delay:0.15s; }
-  .ink-dots span:nth-child(3){ animation-delay:0.3s; }
-  @keyframes dotpulse{
-    0%, 100%{ transform: scale(0.6); opacity:0.4; }
-    50%{ transform: scale(1.1); opacity:1; }
-  }
-
-  footer{
-    text-align:center;
-    margin-top: 50px;
-    font-size: 12px;
-    color: #a59d8b;
-  }
-
-  .retry-row{
-    display:flex;
-    justify-content:center;
-    margin-top: 22px;
-    display:none;
-  }
-  .retry-row.show{ display:flex; }
-  .retry-btn{
-    background:#fff;
+    color: #fff;
     border: 2px solid var(--ink);
     border-radius: 999px;
-    padding: 10px 20px;
-    font-family:'Zen Maru Gothic', sans-serif;
-    font-size: 13.5px;
-    font-weight: 700;
-    cursor:pointer;
-    box-shadow: 3px 3px 0 var(--ink);
-    transition: transform 0.12s;
-  }
-  .retry-btn:active{ transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
-
-  /* ===== APIキー設定 ===== */
-  .key-panel{
-    background: #fff;
-    border: 2px dashed var(--bamboo);
-    border-radius: 16px;
-    padding: 14px 16px;
-    margin-bottom: 18px;
-    font-size: 13px;
-  }
-  .key-panel.is-set{
-    border-style: solid;
-    border-color: var(--line);
-    background: rgba(255,255,255,0.6);
-  }
-  .key-panel-row{
-    display:flex;
-    align-items:center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .key-panel-label{
-    font-weight: 700;
-    color: var(--bamboo-deep);
-    white-space: nowrap;
-    display:flex;
-    align-items:center;
-    gap:5px;
-  }
-  .key-input{
-    flex: 1 1 200px;
-    min-width: 160px;
-    border: 1.3px solid var(--line);
-    border-radius: 10px;
-    padding: 8px 11px;
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-size: 13px;
-    outline:none;
-    background: var(--paper);
-  }
-  .key-input:focus{
-    border-color: var(--coral);
-    box-shadow: 0 0 0 2px rgba(242,87,78,0.12);
-  }
-  .key-save-btn, .key-clear-btn{
-    border: 1.5px solid var(--ink);
-    border-radius: 999px;
-    padding: 7px 14px;
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-size: 12.5px;
     font-weight: 700;
     cursor: pointer;
-    background: #fff;
-    white-space: nowrap;
   }
-  .key-save-btn{
-    background: var(--bamboo);
-    color: #fff;
-    border-color: var(--ink);
-  }
-  .key-clear-btn{
-    color: #8c6a3f;
-    background: transparent;
-    border-color: var(--line);
-  }
-  .key-note{
-    margin-top: 8px;
-    font-size: 11.5px;
-    color: #8c8270;
-    line-height: 1.6;
-  }
-  .key-note a{ color: var(--bamboo-deep); }
-  .key-status-ok{
-    display:none;
-    align-items:center;
-    gap:8px;
-    color: #4a6b3f;
-    font-weight: 700;
-  }
-  .key-panel.is-set .key-status-ok{ display:flex; }
-  .key-panel.is-set .key-form-row{ display:none; }
-  .key-status-ok .badge{
-    width:8px; height:8px;
-    border-radius:50%;
-    background:#5b8c4a;
-    display:inline-block;
-  }
-  .hidden {
-    display: none !important;
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    *{ animation: none !important; transition: none !important; }
-  }
+  .hidden { display: none !important; }
+  
+  /* 既存のCSS（必要に応じて追加してください） */
 </style>
 </head>
 <body>
 
 <div class="stage">
-
-  <header>
-    <span class="kicker">8本足のひらめき相談所</span>
-    <h1>たこ先生の<span class="accent">8本足会議</span></h1>
-    <p class="sub">お悩みをひとこと書くと、たこ先生が8本の足でそれぞれ違う角度から考えて、ひらめきを持ってきてくれます。</p>
-  </header>
-
-  <div class="octo-wrap">
-    <div class="bubble" id="bubble">なやみ、なんでも聞くよ〜</div>
-    <img src="data:image/png;base64,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 recursive;
-      border-radius: 5px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-  </style>
-</head>
-<body>
-
-<div class="code-output">
-  <code><span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np</code><br>
-  <code><span class="code-keyword">import</span> matplotlib.pyplot <span class="code-keyword">as</span> plt</code><br>
-  <code><span class="code-keyword">from</span> scipy.special <span class="code-keyword">import</span> jv, jn_zeros</code><br>
-  <br>
-  <code><span class="code-comment"># Define simulation parameters</span></code><br>
-  <code>r = np.linspace(0, 1, 100)</code><br>
-  <code>theta = np.linspace(0, 2*np.pi, 100)</code><br>
-  <code>R, Theta = np.meshgrid(r, theta)</code><br>
-  <br>
-  <code><span class="code-comment"># Function to plot a specific mode</span></code><br>
-  <code><span class="code-keyword">def</span> <span class="code-function">plot_mode</span>(m, n):</code><br>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;zero = jn_zeros(m, n)[-1]</code><br>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;Z = jv(m, zero * R) * np.cos(m * Theta)</code><br>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;fig, ax = plt.subplots(subplot_kw={<span class="code-string">'projection'</span>: <span class="code-string">'polar'</span>})</code><br>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;c = ax.contourf(Theta, R, Z, cmap=<span class="code-string">'coolwarm'</span>)</code><br>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;plt.title(<span class="code-string">f'Mode ({m},{n})'</span>)</code><br>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;plt.show()</code><br>
-  <br>
-  <code><span class="code-comment"># Plot mode (1, 2)</span></code><br>
-  <code>plot_mode(1, 2)</code>
+  <div id="results-zone"></div>
+  <button id="next-ideas-btn" class="hidden">次の4本を聞く 🐙</button>
 </div>
 
+<script>
+  let currentIdeas = [];
+  let currentIdeaPage = 0;
+
+  // --- メインの表示処理 ---
+  function renderResults(problem, payload) {
+    // payloadから配列を取得（データ構造に応じて調整）
+    currentIdeas = Array.isArray(payload.ideas) ? payload.ideas : (payload || []);
+    currentIdeaPage = 0;
+    
+    const container = document.getElementById('results-zone');
+    container.innerHTML = ''; 
+    
+    displayIdeaPage(currentIdeaPage);
+  }
+
+  // --- ページ表示処理 ---
+  function displayIdeaPage(page) {
+    const container = document.getElementById('results-zone');
+    const nextBtn = document.getElementById('next-ideas-btn');
+    
+    // 現在のページ分だけを表示
+    const startIndex = page * 4;
+    const pageItems = currentIdeas.slice(startIndex, startIndex + 4);
+
+    pageItems.forEach((idea, index) => {
+      setTimeout(() => {
+        const bubble = document.createElement('div');
+        bubble.className = 'octopus-bubble';
+        
+        // オブジェクトか文字列かを判定して表示
+        let content = "";
+        if (typeof idea === 'object' && idea !== null) {
+          const title = idea.title ? `<div class="octopus-bubble-title">💡 ${idea.title}</div>` : '';
+          const body = idea.text || idea.description || idea;
+          content = `${title}<div class="octopus-bubble-body">${body}</div>`;
+        } else {
+          content = `<div class="octopus-bubble-body">${idea}</div>`;
+        }
+        
+        bubble.innerHTML = content;
+        container.appendChild(bubble);
+
+        requestAnimationFrame(() => bubble.classList.add('show'));
+        bubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+        // 最後の要素まで表示し終わったら、次へボタンを判定
+        if (page === 0 && index === pageItems.length - 1 && currentIdeas.length > 4) {
+          setTimeout(() => {
+            nextBtn.classList.remove('hidden');
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          }, 500);
+        }
+      }, index * 800);
+    });
+  }
+
+  // --- 次へボタンのイベント ---
+  document.getElementById('next-ideas-btn').addEventListener('click', () => {
+    currentIdeaPage = 1;
+    document.getElementById('next-ideas-btn').classList.add('hidden');
+    displayIdeaPage(currentIdeaPage);
+  });
+
+  // --- JSONパースの補助（既存のものと差し替えてください） ---
+  function safeParseJSON(text) {
+    try {
+      // マークダウンのブロック記法を除去
+      const cleaned = text.replace(/```json/g, '').replace(/```/g, '');
+      return JSON.parse(cleaned);
+    } catch (e) {
+      console.error("JSON解析エラー:", e);
+      return null;
+    }
+  }
+</script>
 </body>
 </html>
