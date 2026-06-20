@@ -337,13 +337,40 @@
     padding: 16px 17px 17px;
     box-shadow: 4px 4px 0 var(--shadow);
     opacity:0;
-    transform: translateY(16px) scale(0.96);
-    transition: opacity 0.5s cubic-bezier(.2,1,.3,1), transform 0.5s cubic-bezier(.2,1,.3,1);
+    transform-origin: 50% -10%;
+    transform: scale(0.1, 0.3) rotate(var(--leg-rot, -10deg));
     position:relative;
+  }
+  .leg-card:nth-child(odd){ --leg-rot: -11deg; }
+  .leg-card:nth-child(even){ --leg-rot: 11deg; }
+  @media (max-width: 600px){
+    .leg-card:nth-child(odd){ --leg-rot: -7deg; }
+    .leg-card:nth-child(even){ --leg-rot: 7deg; }
+  }
+
+  @keyframes leg-grow{
+    0%{
+      opacity:0;
+      transform: scale(0.1, 0.3) rotate(var(--leg-rot, -10deg)) translateY(-10px);
+    }
+    18%{
+      opacity:1;
+    }
+    55%{
+      transform: scale(1.08, 0.9) rotate(calc(var(--leg-rot, -10deg) * 0.3)) translateY(6px);
+    }
+    78%{
+      transform: scale(0.96, 1.05) rotate(calc(var(--leg-rot, -10deg) * -0.12)) translateY(-3px);
+    }
+    100%{
+      opacity:1;
+      transform: scale(1, 1) rotate(0deg) translateY(0);
+    }
   }
   .leg-card.show{
     opacity:1;
-    transform: translateY(0) scale(1);
+    transform: none;
+    animation: leg-grow 0.7s cubic-bezier(.3,.9,.25,1) both;
   }
   .leg-card.active-speak{
     border-color: var(--coral);
