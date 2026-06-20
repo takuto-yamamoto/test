@@ -19,7 +19,6 @@
     --line: rgba(28,26,23,0.14);
   }
 
-  *{ box-sizing: border-box; }
   body{
     margin:0; padding:20px;
     background: var(--paper);
@@ -27,7 +26,7 @@
     font-family: 'Zen Maru Gothic', sans-serif;
   }
   .stage{ max-width: 600px; margin: 0 auto; }
-  
+
   /* 吹き出しのスタイル */
   .octopus-bubble {
     background: #fff;
@@ -51,6 +50,7 @@
   }
   .octopus-bubble-body { font-size: 14.5px; line-height: 1.6; }
 
+  /* ボタン */
   #next-ideas-btn {
     display: block;
     margin: 20px auto;
@@ -63,13 +63,19 @@
     cursor: pointer;
   }
   .hidden { display: none !important; }
-  
-  /* 既存のCSS（必要に応じて追加してください） */
+
+  /* その他のUI（入力エリアなど）は既存のものを維持してください */
+  textarea { width: 100%; min-height: 100px; padding: 10px; margin-bottom: 10px; }
+  .go-btn { background: var(--coral); color: white; padding: 10px 20px; border: none; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <div class="stage">
+  <h1>たこ先生の8本足会議</h1>
+  <textarea id="problem-input" placeholder="相談したいことを書いてね"></textarea>
+  <button id="go-btn" class="go-btn">会議を開始する</button>
+
   <div id="results-zone"></div>
   <button id="next-ideas-btn" class="hidden">次の4本を聞く 🐙</button>
 </div>
@@ -78,24 +84,23 @@
   let currentIdeas = [];
   let currentIdeaPage = 0;
 
-  // --- メインの表示処理 ---
-  function renderResults(problem, payload) {
-    // payloadから配列を取得（データ構造に応じて調整）
-    currentIdeas = Array.isArray(payload.ideas) ? payload.ideas : (payload || []);
+  // --- 表示処理（完全版） ---
+  function renderResults(payload) {
+    // データが配列かチェックして保持
+    currentIdeas = Array.isArray(payload.ideas) ? payload.ideas : (payload.ideas || []);
     currentIdeaPage = 0;
     
     const container = document.getElementById('results-zone');
     container.innerHTML = ''; 
     
-    displayIdeaPage(currentIdeaPage);
+    // 最初の4つを表示
+    displayIdeaPage(0);
   }
 
-  // --- ページ表示処理 ---
   function displayIdeaPage(page) {
     const container = document.getElementById('results-zone');
     const nextBtn = document.getElementById('next-ideas-btn');
     
-    // 現在のページ分だけを表示
     const startIndex = page * 4;
     const pageItems = currentIdeas.slice(startIndex, startIndex + 4);
 
@@ -104,7 +109,7 @@
         const bubble = document.createElement('div');
         bubble.className = 'octopus-bubble';
         
-        // オブジェクトか文字列かを判定して表示
+        // オブジェクト/文字列の判定を強化
         let content = "";
         if (typeof idea === 'object' && idea !== null) {
           const title = idea.title ? `<div class="octopus-bubble-title">💡 ${idea.title}</div>` : '';
@@ -131,24 +136,20 @@
     });
   }
 
-  // --- 次へボタンのイベント ---
+  // --- 次へボタン ---
   document.getElementById('next-ideas-btn').addEventListener('click', () => {
     currentIdeaPage = 1;
     document.getElementById('next-ideas-btn').classList.add('hidden');
     displayIdeaPage(currentIdeaPage);
   });
 
-  // --- JSONパースの補助（既存のものと差し替えてください） ---
-  function safeParseJSON(text) {
-    try {
-      // マークダウンのブロック記法を除去
-      const cleaned = text.replace(/```json/g, '').replace(/```/g, '');
-      return JSON.parse(cleaned);
-    } catch (e) {
-      console.error("JSON解析エラー:", e);
-      return null;
-    }
-  }
+  // --- API実行の例（既存のものに合わせてください） ---
+  document.getElementById('go-btn').addEventListener('click', async () => {
+    // ここにAPIを呼び出すロジックを配置してください
+    // 例: const response = await callGemini(...);
+    // 成功したら: renderResults(payload); を呼ぶ
+    alert("このボタンの処理にAPI呼び出しを繋げてくださいね！");
+  });
 </script>
 </body>
 </html>
