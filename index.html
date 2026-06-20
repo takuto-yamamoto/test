@@ -6,31 +6,18 @@
   <title>🍌 マジカルバナナ</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-      background: #f5f5f3;
-      color: #1a1a1a;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
+      background: #f5f5f3; color: #1a1a1a; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding: 1.5rem;
     }
-
     .container {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 24px rgba(0,0,0,0.08);
-      padding: 2rem;
-      width: 100%;
-      max-width: 520px;
+      background: #fff; border-radius: 16px; box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+      padding: 2rem; width: 100%; max-width: 520px;
     }
-
     h1 { font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 0.25rem; }
     .sub { font-size: 13px; color: #888; text-align: center; margin-bottom: 1.5rem; }
 
-    /* API section */
     .api-section { background: #f7f7f5; border: 1px solid #e5e5e0; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
     .api-section p { font-size: 13px; color: #666; margin-bottom: 0.75rem; }
     .api-row { display: flex; gap: 8px; }
@@ -38,7 +25,6 @@
     .api-row input:focus { border-color: #888; }
     .api-note { font-size: 11px; color: #aaa; margin-top: 0.5rem !important; }
 
-    /* Buttons */
     button {
       padding: 8px 16px; border: 1px solid #ccc; border-radius: 8px;
       background: #fff; color: #333; font-size: 13px; cursor: pointer;
@@ -47,7 +33,6 @@
     button:hover { background: #f5f5f3; border-color: #aaa; }
     button:active { transform: scale(0.98); }
 
-    /* Game area */
     .game { display: none; }
 
     .scores { display: flex; justify-content: center; gap: 2.5rem; margin-bottom: 1.25rem; }
@@ -55,7 +40,6 @@
     .score-num { font-size: 22px; font-weight: 600; }
     .score-lbl { font-size: 11px; color: #aaa; margin-top: 2px; }
 
-    /* Chain */
     .chain-box {
       background: #f7f7f5; border: 1px solid #e5e5e0; border-radius: 12px;
       padding: 0.75rem 1rem; margin-bottom: 1.25rem; overflow-x: auto;
@@ -67,13 +51,11 @@
     .chip.ai { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
     .arr { color: #ccc; font-size: 13px; }
 
-    /* Prompt */
     .prompt-box { text-align: center; margin: 1rem 0 0.5rem; }
     .prompt-label { font-size: 12px; color: #aaa; margin-bottom: 4px; }
     .prompt-word { font-size: 36px; font-weight: 600; line-height: 1.2; }
     .hint { font-size: 12px; color: #aaa; text-align: center; margin-bottom: 1rem; }
 
-    /* Recognized */
     .recognized-wrap { text-align: center; min-height: 28px; margin-bottom: 0.75rem; }
     .recognized {
       display: inline-block; font-size: 14px; font-weight: 500;
@@ -84,46 +66,56 @@
     .mic-area { position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; height: 96px; }
     .mic-ring {
       position: absolute; width: 92px; height: 92px; border-radius: 50%;
-      border: 2px solid transparent; transition: border-color 0.2s, transform 0.2s;
-      pointer-events: none;
+      border: 2px solid transparent; transition: border-color 0.2s, transform 0.2s; pointer-events: none;
     }
     .mic-ring.active { border-color: #ef4444; transform: scale(1.12); animation: ripple 1s infinite; }
     .mic-ring.blocked { border-color: #e5e5e0; }
     @keyframes ripple { 0%,100%{opacity:1;transform:scale(1.12)} 50%{opacity:0.4;transform:scale(1.22)} }
-
     .mic-btn {
       width: 72px; height: 72px; border-radius: 50%;
-      border: 2px solid #ccc; background: #fff;
-      font-size: 28px; cursor: pointer; position: relative; z-index: 1;
-      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #ccc; background: #fff; font-size: 28px; cursor: pointer;
+      position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
       transition: background 0.15s, border-color 0.15s, opacity 0.15s;
     }
     .mic-btn:hover { background: #f5f5f3; }
     .mic-btn.listening { border-color: #ef4444; background: #fef2f2; }
     .mic-btn.blocked { opacity: 0.35; cursor: not-allowed; border-color: #e5e5e0; }
 
-    .status-text { text-align: center; font-size: 13px; color: #888; min-height: 20px; margin-bottom: 1rem; }
+    /* Text input fallback */
+    .text-input-row {
+      display: flex; gap: 8px; margin-bottom: 0.5rem;
+    }
+    .text-input-row input {
+      flex: 1; padding: 10px 14px; border: 1px solid #ddd; border-radius: 10px;
+      font-size: 16px; outline: none; transition: border-color 0.15s;
+    }
+    .text-input-row input:focus { border-color: #666; }
+    .text-input-row input:disabled { opacity: 0.4; background: #f5f5f3; }
+    .text-input-row button { padding: 10px 16px; font-size: 14px; border-radius: 10px; }
 
-    .reset-btn { font-size: 12px; color: #bbb; background: none; border: none; cursor: pointer; display: block; margin: 0 auto; padding: 4px 8px; }
+    .divider { display: flex; align-items: center; gap: 8px; margin: 0.5rem 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e5e5e0; }
+    .divider span { font-size: 11px; color: #bbb; }
+
+    .status-text { text-align: center; font-size: 13px; color: #888; min-height: 20px; margin-bottom: 0.75rem; }
+    .status-text.error-msg { color: #b91c1c; background: #fef2f2; border-radius: 8px; padding: 6px 12px; font-size: 12px; }
+
+    .reset-btn { font-size: 12px; color: #bbb; background: none; border: none; cursor: pointer; display: block; margin: 0.25rem auto 0; padding: 4px 8px; }
     .reset-btn:hover { color: #888; background: none; border: none; transform: none; }
 
     @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.18)} 100%{transform:scale(1)} }
     .pop { animation: pop 0.3s ease; }
 
-    .no-support {
-      color: #b91c1c; font-size: 13px; text-align: center;
-      padding: 1rem; background: #fef2f2; border-radius: 10px; margin-bottom: 1rem;
+    .warn-box {
+      font-size: 12px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a;
+      border-radius: 8px; padding: 8px 12px; margin-bottom: 1rem; line-height: 1.6; text-align: center;
     }
   </style>
 </head>
 <body>
 <div class="container">
   <h1>🍌 マジカルバナナ</h1>
-  <div class="sub">Gemini AIと声で連想ゲーム</div>
-
-  <div id="noSupport" style="display:none">
-    <div class="no-support">⚠️ このブラウザは音声認識に対応していません。<br>Chrome または Edge をお使いください。</div>
-  </div>
+  <div class="sub">Gemini AIと声＆テキストで連想ゲーム</div>
 
   <div class="api-section" id="apiSection">
     <p>Gemini APIキーを入力してゲームを始めましょう。</p>
@@ -153,12 +145,22 @@
       <span class="recognized" id="recognized">&nbsp;</span>
     </div>
 
-    <div class="mic-area">
-      <div class="mic-ring" id="micRing"></div>
-      <button class="mic-btn" id="micBtn" onclick="toggleListen()" aria-label="マイク">🎤</button>
+    <!-- 音声ボタン -->
+    <div id="voiceSection">
+      <div class="mic-area">
+        <div class="mic-ring" id="micRing"></div>
+        <button class="mic-btn" id="micBtn" onclick="toggleListen()" aria-label="マイク">🎤</button>
+      </div>
+      <div class="divider"><span>または</span></div>
     </div>
-    <div class="status-text" id="statusText">ボタンを押して話す</div>
 
+    <!-- テキスト入力 -->
+    <div class="text-input-row">
+      <input type="text" id="textInput" placeholder="テキストで入力（Enterで送信）" onkeydown="if(event.key==='Enter')submitText()" />
+      <button onclick="submitText()">送る</button>
+    </div>
+
+    <div class="status-text" id="statusText">🎤 ボタンを押して話す、またはテキスト入力</div>
     <button class="reset-btn" onclick="resetGame()">リセット</button>
   </div>
 </div>
@@ -171,8 +173,10 @@ let pScore = 0, aScore = 0, tCount = 0;
 let recognition = null;
 let isListening = false;
 let isSpeaking = false;
+let isBusy = false;
 let synth = window.speechSynthesis;
 let voices = [];
+let hasSpeechRecognition = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
 
 function loadVoices() { voices = synth.getVoices(); }
 if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
@@ -186,7 +190,7 @@ function getJaVoice() {
 function speak(text, onEnd) {
   synth.cancel();
   isSpeaking = true;
-  updateMicUI();
+  updateUI();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'ja-JP';
   const v = getJaVoice();
@@ -194,7 +198,8 @@ function speak(text, onEnd) {
   u.rate = 1.1;
   u.onend = u.onerror = () => {
     isSpeaking = false;
-    updateMicUI();
+    isBusy = false;
+    updateUI();
     if (onEnd) onEnd();
   };
   synth.speak(u);
@@ -204,15 +209,16 @@ function startGame() {
   const key = document.getElementById('apiKey').value.trim();
   if (!key) { alert('APIキーを入力してください'); return; }
   apiKey = key;
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    document.getElementById('noSupport').style.display = 'block';
-    document.getElementById('apiSection').style.display = 'none';
-    return;
-  }
   document.getElementById('apiSection').style.display = 'none';
   document.getElementById('gameArea').style.display = 'block';
+
+  if (!hasSpeechRecognition) {
+    document.getElementById('voiceSection').style.display = 'none';
+    setStatus('テキストで入力してください');
+  }
+
   addChain('バナナ', 'start');
-  speak('マジカルバナナ。バナナといったら？', () => setStatus('ボタンを押して話す'));
+  speak('マジカルバナナ。バナナといったら？', () => setStatus('🎤 ボタンで話す、またはテキスト入力'));
 }
 
 function addChain(word, type) {
@@ -242,7 +248,7 @@ function startListening() {
 
   recognition.onstart = () => {
     isListening = true;
-    updateMicUI();
+    updateUI();
     setStatus('🎤 聞いています…');
     document.getElementById('recognized').textContent = '…';
   };
@@ -263,14 +269,22 @@ function startListening() {
 
   recognition.onerror = (e) => {
     isListening = false;
-    updateMicUI();
-    if (e.error === 'no-speech') setStatus('聞こえませんでした。もう一度どうぞ');
-    else setStatus('エラー: ' + e.error);
+    updateUI();
+    const msgs = {
+      'no-speech': '声が検出されませんでした。もう一度どうぞ',
+      'network': 'ネットワークエラー。テキスト入力をお使いください',
+      'not-allowed': 'マイクが許可されていません。ブラウザ設定を確認してください',
+      'aborted': '音声認識がキャンセルされました',
+      'audio-capture': 'マイクが見つかりません',
+      'service-not-allowed': '音声サービスが利用できません。テキスト入力をお使いください',
+    };
+    const msg = msgs[e.error] || ('音声エラー: ' + e.error);
+    setStatus(msg, true);
   };
 
   recognition.onend = () => {
     isListening = false;
-    updateMicUI();
+    updateUI();
   };
 
   recognition.start();
@@ -279,18 +293,29 @@ function startListening() {
 function stopListening() {
   if (recognition) recognition.stop();
   isListening = false;
-  updateMicUI();
-  setStatus('ボタンを押して話す');
+  updateUI();
+  setStatus('🎤 ボタンで話す、またはテキスト入力');
+}
+
+function submitText() {
+  if (isBusy || isSpeaking) return;
+  const input = document.getElementById('textInput');
+  const word = input.value.trim();
+  if (!word) return;
+  input.value = '';
+  handlePlayerWord(word);
 }
 
 function handlePlayerWord(word) {
-  if (!word) return;
+  if (!word || isBusy) return;
+  isBusy = true;
   pScore++; tCount++;
   updateScores();
   addChain(word, 'player');
   document.getElementById('recognized').textContent = '「' + word + '」';
   setPrompt('Geminiが考え中…', word);
   setStatus('💭 考えています…');
+  updateUI();
   geminiTurn(word);
 }
 
@@ -328,31 +353,43 @@ async function geminiTurn(prevWord) {
     document.getElementById('hintText').textContent = `「${aiWord}といったら？」`;
     document.getElementById('recognized').textContent = '\u00a0';
 
-    speak(aiWord + 'といったら？', () => setStatus('ボタンを押して話す'));
+    speak(aiWord + 'といったら？', () => {
+      setStatus('🎤 ボタンで話す、またはテキスト入力');
+    });
 
   } catch (e) {
-    setStatus('エラー: ' + e.message);
+    setStatus('エラー: ' + e.message, true);
     isSpeaking = false;
-    updateMicUI();
+    isBusy = false;
+    updateUI();
   }
 }
 
-function updateMicUI() {
+function updateUI() {
   const btn = document.getElementById('micBtn');
   const ring = document.getElementById('micRing');
+  const textInput = document.getElementById('textInput');
+
   if (isSpeaking) {
     btn.textContent = '🔊';
     btn.className = 'mic-btn blocked';
     ring.className = 'mic-ring blocked';
-    setStatus('🔊 Geminiが話しています…');
+    textInput.disabled = true;
+  } else if (isBusy) {
+    btn.textContent = '💭';
+    btn.className = 'mic-btn blocked';
+    ring.className = 'mic-ring';
+    textInput.disabled = true;
   } else if (isListening) {
     btn.textContent = '🔴';
     btn.className = 'mic-btn listening';
     ring.className = 'mic-ring active';
+    textInput.disabled = false;
   } else {
     btn.textContent = '🎤';
     btn.className = 'mic-btn';
     ring.className = 'mic-ring';
+    textInput.disabled = false;
   }
 }
 
@@ -368,7 +405,11 @@ function popWord() {
   el.classList.add('pop');
 }
 
-function setStatus(msg) { document.getElementById('statusText').textContent = msg; }
+function setStatus(msg, isError) {
+  const el = document.getElementById('statusText');
+  el.textContent = msg;
+  el.className = 'status-text' + (isError ? ' error-msg' : '');
+}
 
 function updateScores() {
   document.getElementById('pScore').textContent = pScore;
@@ -380,15 +421,16 @@ function resetGame() {
   synth.cancel();
   if (recognition) recognition.stop();
   chain = []; pScore = 0; aScore = 0; tCount = 0;
-  isListening = false; isSpeaking = false;
+  isListening = false; isSpeaking = false; isBusy = false;
   document.getElementById('chainList').innerHTML = '';
   document.getElementById('recognized').textContent = '\u00a0';
+  document.getElementById('textInput').value = '';
   updateScores();
   addChain('バナナ', 'start');
   setPrompt('あなたの番', 'バナナ');
   document.getElementById('hintText').textContent = '「バナナといったら？」';
-  updateMicUI();
-  speak('もう一度。バナナといったら？', () => setStatus('ボタンを押して話す'));
+  updateUI();
+  speak('もう一度。バナナといったら？', () => setStatus('🎤 ボタンで話す、またはテキスト入力'));
 }
 </script>
 </body>
