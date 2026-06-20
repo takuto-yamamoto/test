@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍌 マジカルバナナ</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: #f5f5f3;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+      padding: 2rem;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    h1 { font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 0.25rem; }
+    .sub { font-size: 13px; color: #888; text-align: center; margin-bottom: 1.5rem; }
+
+    /* API section */
+    .api-section { background: #f7f7f5; border: 1px solid #e5e5e0; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+    .api-section p { font-size: 13px; color: #666; margin-bottom: 0.75rem; }
+    .api-row { display: flex; gap: 8px; }
+    .api-row input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; }
+    .api-row input:focus { border-color: #888; }
+    .api-note { font-size: 11px; color: #aaa; margin-top: 0.5rem !important; }
+
+    /* Buttons */
+    button {
+      padding: 8px 16px; border: 1px solid #ccc; border-radius: 8px;
+      background: #fff; color: #333; font-size: 13px; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    button:hover { background: #f5f5f3; border-color: #aaa; }
+    button:active { transform: scale(0.98); }
+
+    /* Game area */
+    .game { display: none; }
+
+    .scores { display: flex; justify-content: center; gap: 2.5rem; margin-bottom: 1.25rem; }
+    .score-item { text-align: center; }
+    .score-num { font-size: 22px; font-weight: 600; }
+    .score-lbl { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+    /* Chain */
+    .chain-box {
+      background: #f7f7f5; border: 1px solid #e5e5e0; border-radius: 12px;
+      padding: 0.75rem 1rem; margin-bottom: 1.25rem; overflow-x: auto;
+    }
+    .chain-list { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .chip { border-radius: 8px; padding: 3px 10px; font-size: 13px; font-weight: 500; }
+    .chip.start { background: #eee; color: #666; border: 1px solid #ddd; }
+    .chip.player { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .chip.ai { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .arr { color: #ccc; font-size: 13px; }
+
+    /* Prompt */
+    .prompt-box { text-align: center; margin: 1rem 0 0.5rem; }
+    .prompt-label { font-size: 12px; color: #aaa; margin-bottom: 4px; }
+    .prompt-word { font-size: 36px; font-weight: 600; line-height: 1.2; }
+    .hint { font-size: 12px; color: #aaa; text-align: center; margin-bottom: 1rem; }
+
+    /* Recognized */
+    .recognized-wrap { text-align: center; min-height: 28px; margin-bottom: 0.75rem; }
+    .recognized {
+      display: inline-block; font-size: 14px; font-weight: 500;
+      background: #f7f7f5; border-radius: 8px; padding: 3px 12px;
+    }
+
+    /* Mic button */
+    .mic-area { position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; height: 96px; }
+    .mic-ring {
+      position: absolute; width: 92px; height: 92px; border-radius: 50%;
+      border: 2px solid transparent; transition: border-color 0.2s, transform 0.2s;
+      pointer-events: none;
+    }
+    .mic-ring.active { border-color: #ef4444; transform: scale(1.12); animation: ripple 1s infinite; }
+    .mic-ring.blocked { border-color: #e5e5e0; }
+    @keyframes ripple { 0%,100%{opacity:1;transform:scale(1.12)} 50%{opacity:0.4;transform:scale(1.22)} }
+
+    .mic-btn {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid #ccc; background: #fff;
+      font-size: 28px; cursor: pointer; position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+    }
+    .mic-btn:hover { background: #f5f5f3; }
+    .mic-btn.listening { border-color: #ef4444; background: #fef2f2; }
+    .mic-btn.blocked { opacity: 0.35; cursor: not-allowed; border-color: #e5e5e0; }
+
+    .status-text { text-align: center; font-size: 13px; color: #888; min-height: 20px; margin-bottom: 1rem; }
+
+    .reset-btn { font-size: 12px; color: #bbb; background: none; border: none; cursor: pointer; display: block; margin: 0 auto; padding: 4px 8px; }
+    .reset-btn:hover { color: #888; background: none; border: none; transform: none; }
+
+    @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.18)} 100%{transform:scale(1)} }
+    .pop { animation: pop 0.3s ease; }
+
+    .no-support {
+      color: #b91c1c; font-size: 13px; text-align: center;
+      padding: 1rem; background: #fef2f2; border-radius: 10px; margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🍌 マジカルバナナ</h1>
+  <div class="sub">Gemini AIと声で連想ゲーム</div>
+
+  <div id="noSupport" style="display:none">
+    <div class="no-support">⚠️ このブラウザは音声認識に対応していません。<br>Chrome または Edge をお使いください。</div>
+  </div>
+
+  <div class="api-section" id="apiSection">
+    <p>Gemini APIキーを入力してゲームを始めましょう。</p>
+    <div class="api-row">
+      <input type="password" id="apiKey" placeholder="AIza..." />
+      <button onclick="startGame()">始める →</button>
+    </div>
+    <p class="api-note">キーはGemini APIへの直接リクエストにのみ使用されます。</p>
+  </div>
+
+  <div class="game" id="gameArea">
+    <div class="scores">
+      <div class="score-item"><div class="score-num" id="pScore">0</div><div class="score-lbl">あなた</div></div>
+      <div class="score-item"><div class="score-num" id="tCount">0</div><div class="score-lbl">ターン</div></div>
+      <div class="score-item"><div class="score-num" id="aScore">0</div><div class="score-lbl">Gemini</div></div>
+    </div>
+
+    <div class="chain-box"><div class="chain-list" id="chainList"></div></div>
+
+    <div class="prompt-box">
+      <div class="prompt-label" id="promptLabel">あなたの番</div>
+      <div class="prompt-word" id="promptWord">バナナ</div>
+    </div>
+    <div class="hint" id="hintText">「バナナといったら？」</div>
+
+    <div class="recognized-wrap">
+      <span class="recognized" id="recognized">&nbsp;</span>
+    </div>
+
+    <div class="mic-area">
+      <div class="mic-ring" id="micRing"></div>
+      <button class="mic-btn" id="micBtn" onclick="toggleListen()" aria-label="マイク">🎤</button>
+    </div>
+    <div class="status-text" id="statusText">ボタンを押して話す</div>
+
+    <button class="reset-btn" onclick="resetGame()">リセット</button>
+  </div>
+</div>
+
+<script>
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+let apiKey = '';
+let chain = [];
+let pScore = 0, aScore = 0, tCount = 0;
+let recognition = null;
+let isListening = false;
+let isSpeaking = false;
+let synth = window.speechSynthesis;
+let voices = [];
+
+function loadVoices() { voices = synth.getVoices(); }
+if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+loadVoices();
+
+function getJaVoice() {
+  loadVoices();
+  return voices.find(v => v.lang === 'ja-JP') || voices.find(v => v.lang.startsWith('ja')) || null;
+}
+
+function speak(text, onEnd) {
+  synth.cancel();
+  isSpeaking = true;
+  updateMicUI();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP';
+  const v = getJaVoice();
+  if (v) u.voice = v;
+  u.rate = 1.1;
+  u.onend = u.onerror = () => {
+    isSpeaking = false;
+    updateMicUI();
+    if (onEnd) onEnd();
+  };
+  synth.speak(u);
+}
+
+function startGame() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) { alert('APIキーを入力してください'); return; }
+  apiKey = key;
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    document.getElementById('noSupport').style.display = 'block';
+    document.getElementById('apiSection').style.display = 'none';
+    return;
+  }
+  document.getElementById('apiSection').style.display = 'none';
+  document.getElementById('gameArea').style.display = 'block';
+  addChain('バナナ', 'start');
+  speak('マジカルバナナ。バナナといったら？', () => setStatus('ボタンを押して話す'));
+}
+
+function addChain(word, type) {
+  const list = document.getElementById('chainList');
+  if (chain.length > 0) {
+    const a = document.createElement('span'); a.className = 'arr'; a.textContent = '→'; list.appendChild(a);
+  }
+  const c = document.createElement('span'); c.className = 'chip ' + type; c.textContent = word;
+  list.appendChild(c);
+  chain.push(word);
+  list.parentElement.scrollLeft = 9999;
+}
+
+function toggleListen() {
+  if (isSpeaking) return;
+  if (isListening) { stopListening(); return; }
+  startListening();
+}
+
+function startListening() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'ja-JP';
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 3;
+  recognition.continuous = false;
+
+  recognition.onstart = () => {
+    isListening = true;
+    updateMicUI();
+    setStatus('🎤 聞いています…');
+    document.getElementById('recognized').textContent = '…';
+  };
+
+  recognition.onresult = (e) => {
+    let interim = '', final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += t;
+      else interim += t;
+    }
+    document.getElementById('recognized').textContent = final || interim || '…';
+    if (final) {
+      recognition.stop();
+      handlePlayerWord(final.trim());
+    }
+  };
+
+  recognition.onerror = (e) => {
+    isListening = false;
+    updateMicUI();
+    if (e.error === 'no-speech') setStatus('聞こえませんでした。もう一度どうぞ');
+    else setStatus('エラー: ' + e.error);
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    updateMicUI();
+  };
+
+  recognition.start();
+}
+
+function stopListening() {
+  if (recognition) recognition.stop();
+  isListening = false;
+  updateMicUI();
+  setStatus('ボタンを押して話す');
+}
+
+function handlePlayerWord(word) {
+  if (!word) return;
+  pScore++; tCount++;
+  updateScores();
+  addChain(word, 'player');
+  document.getElementById('recognized').textContent = '「' + word + '」';
+  setPrompt('Geminiが考え中…', word);
+  setStatus('💭 考えています…');
+  geminiTurn(word);
+}
+
+async function geminiTurn(prevWord) {
+  try {
+    const history = chain.slice(-8).join(' → ');
+    const prompt = `あなたはマジカルバナナという日本の連想ゲームをしています。
+「${prevWord}といったら？」に対して、自然に連想できる単語を1つだけ答えてください。
+これまでの流れ: ${history}
+ルール:
+- 既に出た言葉(${chain.join('、')})は使わない
+- 単語1つだけ（説明不要、句読点不要）
+- 日本語で短い言葉（2〜5文字が理想）
+答え:`;
+
+    const res = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 30, temperature: 0.85 }
+      })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'APIエラー'); }
+    const data = await res.json();
+    let aiWord = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+      .replace(/「|」|。|、|！|？|\n|　/g, '').split(/\s+/)[0];
+    if (!aiWord) throw new Error('回答を取得できませんでした');
+
+    aScore++; tCount++;
+    updateScores();
+    addChain(aiWord, 'ai');
+    setPrompt('あなたの番', aiWord);
+    popWord();
+    document.getElementById('hintText').textContent = `「${aiWord}といったら？」`;
+    document.getElementById('recognized').textContent = '\u00a0';
+
+    speak(aiWord + 'といったら？', () => setStatus('ボタンを押して話す'));
+
+  } catch (e) {
+    setStatus('エラー: ' + e.message);
+    isSpeaking = false;
+    updateMicUI();
+  }
+}
+
+function updateMicUI() {
+  const btn = document.getElementById('micBtn');
+  const ring = document.getElementById('micRing');
+  if (isSpeaking) {
+    btn.textContent = '🔊';
+    btn.className = 'mic-btn blocked';
+    ring.className = 'mic-ring blocked';
+    setStatus('🔊 Geminiが話しています…');
+  } else if (isListening) {
+    btn.textContent = '🔴';
+    btn.className = 'mic-btn listening';
+    ring.className = 'mic-ring active';
+  } else {
+    btn.textContent = '🎤';
+    btn.className = 'mic-btn';
+    ring.className = 'mic-ring';
+  }
+}
+
+function setPrompt(label, word) {
+  document.getElementById('promptLabel').textContent = label;
+  document.getElementById('promptWord').textContent = word;
+}
+
+function popWord() {
+  const el = document.getElementById('promptWord');
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+
+function setStatus(msg) { document.getElementById('statusText').textContent = msg; }
+
+function updateScores() {
+  document.getElementById('pScore').textContent = pScore;
+  document.getElementById('aScore').textContent = aScore;
+  document.getElementById('tCount').textContent = tCount;
+}
+
+function resetGame() {
+  synth.cancel();
+  if (recognition) recognition.stop();
+  chain = []; pScore = 0; aScore = 0; tCount = 0;
+  isListening = false; isSpeaking = false;
+  document.getElementById('chainList').innerHTML = '';
+  document.getElementById('recognized').textContent = '\u00a0';
+  updateScores();
+  addChain('バナナ', 'start');
+  setPrompt('あなたの番', 'バナナ');
+  document.getElementById('hintText').textContent = '「バナナといったら？」';
+  updateMicUI();
+  speak('もう一度。バナナといったら？', () => setStatus('ボタンを押して話す'));
+}
+</script>
+</body>
+</html>
